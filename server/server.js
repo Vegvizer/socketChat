@@ -19,7 +19,6 @@ app.use(express.static(publicpath));
 
 io.on('connection', (socket)=>{
     console.log("new user connected");
-    // console.log(socket.server.sockets)
 
     socket.emit('newMsg',generateMessage('Admin','Welcome to our chat'));
 
