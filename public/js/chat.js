@@ -19,7 +19,7 @@ function scrollToBottom(){
 socket.on('connect', ()=>{
     console.log('Connected to Server');
     // getLocation();
-    var name = !jQuery.isEmptyObject(urlParams) ? urlParams.name : socket.id;
+    // var name = !jQuery.isEmptyObject(urlParams) ? urlParams.name : socket.id;
 
     socket.emit('join', urlParams, function(err){
         if(err){
@@ -36,7 +36,6 @@ socket.on('connect', ()=>{
         }
         else{
             socket.emit('createMsg',{
-                from:name,
                 text: $('#m').val()
             }, function (data){
                 console.log(data);
