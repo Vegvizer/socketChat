@@ -1,5 +1,5 @@
 var socket = io();
-
+var urlParams = $.deparam(window.location.search);
 
 function scrollToBottom(){
     var messages = $('#messages');
@@ -19,7 +19,16 @@ function scrollToBottom(){
 socket.on('connect', ()=>{
     console.log('Connected to Server');
     // getLocation();
-    var id = socket.id;
+    var name = !jQuery.isEmptyObject(urlParams) ? urlParams.name : socket.id;
+
+    socket.emit('join', urlParams, function(err){
+        if(err){
+            alert(err);
+            window.location.href = '/';
+        } else {
+            console.log('No error.')
+        }
+    });
 
     $('form').submit(function(){
         if($('#m').val() === ''){
@@ -27,7 +36,7 @@ socket.on('connect', ()=>{
         }
         else{
             socket.emit('createMsg',{
-                from:id,
+                from:name,
                 text: $('#m').val()
             }, function (data){
                 console.log(data);
@@ -67,6 +76,15 @@ socket.on('createMsg', function(msg){
     // $('#messages').append($('<li>').text(msg.createdAt +`  `+ msg.from + ': '+ msg.text));
     scrollToBottom();
 });
+
+socket.on('updateUserList', function(users){
+    var ol = $('<ul></ul>');
+    users.forEach(function(user) {
+        ol.append($('<li></li>').text(user));
+    });
+
+    $('#users').html(ol);
+})
 
 socket.on('newLocationMsg', function(msg){
     var template = $('#location-message-template').html();
